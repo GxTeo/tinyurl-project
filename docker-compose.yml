@@ -58,6 +58,6 @@ services:
 
 volumes:
 
-  db_data:  # Define a named volume for persistent storage
-  redis_data:  # Define a named volume for persistent storage
+  db_data:  
+  redis_data: 
 
