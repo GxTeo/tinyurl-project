@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+
+  tinyurl_frontend:
+    build:
+      context: ./tinyurl-frontend
+      dockerfile: Dockerfile  
+    ports:
+      - "80:80"  
+    environment:
+      REACT_APP_BACKEND_URL: http://localhost:8080
+    depends_on:
+      - tinyurl_backend
+
+  tinyurl_backend:
+    build:
+      context: .
+      dockerfile: Dockerfile  
+    ports:
+      - "8080:8080"  
+    environment:
+      DB_HOST: tinyurl_postgres_db  
+      DB_PORT: 5432
+      DB_USER: youruser  
+      DB_PASSWORD: yourpassword  
+      DB_NAME: yourdb
+      CACHE_HOST: tinyurl_redis_cache
+      CACHE_PORT: 6379
+      CACHE_PASSWORD: yourpassword
+      CACHE_DB: 0
+      API_PORT: 8080
+    depends_on:
+      - tinyurl_postgres_db
+      - tinyurl_redis_cache
+
+  tinyurl_postgres_db:
+    image: postgres:latest  
+    environment:
+      POSTGRES_USER: youruser  
+      POSTGRES_PASSWORD: yourpassword  
+      POSTGRES_DB: yourdb  
+    ports:
+      - "5433:5432"  # Expose PostgreSQL to your own port
+    volumes:
+      - db_data:/var/lib/postgresql/tinyurl_postgres_data  # Persist database data
+
+
+  tinyurl_redis_cache:
+      image: redis:latest  
+      ports:
+        - "6379:6379"  # Expose Redis to your own port
+      environment:
+        - REDIS_PASSWORD=yourpassword  # Set a password for Redis (optional)
+      command: ["redis-server", "--requirepass", "yourpassword"]  # Start Redis with password protection
+      volumes:
+        - redis_data:/data/tinyurl_redis_data  # Persist Redis data
+
+volumes:
+
+  db_data:  # Define a named volume for persistent storage
+  redis_data:  # Define a named volume for persistent storage
+
