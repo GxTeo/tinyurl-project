@@ -8,7 +8,7 @@ import (
 
 func CORS() gin.HandlerFunc {
 	allowedOrigins := []string{
-		"http://localhost:80",
+		"http://localhost",
 		"http://example.com",
 		"http://anotherdomain.com",
 	}
@@ -16,6 +16,7 @@ func CORS() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Get the origin from the request
 		origin := c.Request.Header.Get("Origin")
+		// fmt.Println("Origin: ", origin)
 
 		// Check if the origin is in the allowed origins
 		for _, allowedOrigin := range allowedOrigins {
